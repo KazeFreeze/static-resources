@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 EPIC VAULT 🔥</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00, #ff00ff);
+            background-size: 400% 400%;
+            animation: rainbow 3s ease infinite;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            color: #fff;
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 3px solid #00ff00;
+            border-radius: 15px;
+            box-shadow: 0 0 20px #00ff00;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin: 0;
+            color: #00ff00;
+            text-shadow: 3px 3px 0px #ff00ff;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.7; }
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #ffff00;
+            margin: 10px 0;
+        }
+
+        .counter {
+            background: rgba(255, 0, 255, 0.8);
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
+            margin: 10px;
+            border: 2px solid #fff;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .media-item {
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid #ff00ff;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 0, 255, 0.5);
+        }
+
+        .media-item:hover {
+            transform: scale(1.05) rotate(1deg);
+            border-color: #00ff00;
+            box-shadow: 0 10px 25px rgba(0, 255, 0, 0.8);
+        }
+
+        .media-item img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 10px;
+            border: 2px solid #00ffff;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .media-item img:hover {
+            transform: scale(1.1);
+        }
+
+        .filename {
+            margin-top: 10px;
+            color: #00ffff;
+            font-weight: bold;
+            word-break: break-word;
+            font-size: 0.9em;
+        }
+
+        .loading {
+            text-align: center;
+            font-size: 1.5em;
+            color: #ffff00;
+            margin: 50px 0;
+        }
+
+        .error {
+            background: rgba(255, 0, 0, 0.8);
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            border: 2px solid #fff;
+        }
+
+        /* Retro scrollbar */
+        ::-webkit-scrollbar {
+            width: 15px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000;
+            border: 2px solid #ff00ff;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+            border-radius: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            color: #00ffff;
+        }
+
+        /* Modal for fullsize viewing */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .modal img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .close:hover {
+            color: #ff00ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔥 EPIC VAULT 🔥</h1>
+        <div class="subtitle">✨ Welcome to the Ultimate Collection ✨</div>
+        <div class="counter" id="counter">Loading media...</div>
+    </div>
+
+    <div class="loading" id="loading">🚀 Loading your dank media... 🚀</div>
+    <div class="error" id="error" style="display: none;"></div>
+    <div class="gallery" id="gallery"></div>
+
+    <div class="footer">
+        <p>💫 Powered by 2000s Nostalgia 💫</p>
+        <p>Click any image to view full size!</p>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <span class="close">&times;</span>
+        <div class="modal-content">
+            <img id="modal-img" src="" alt="">
+        </div>
+    </div>
+
+    <script>
+        const gallery = document.getElementById('gallery');
+        const loading = document.getElementById('loading');
+        const error = document.getElementById('error');
+        const counter = document.getElementById('counter');
+        const modal = document.getElementById('modal');
+        const modalImg = document.getElementById('modal-img');
+        const closeBtn = document.querySelector('.close');
+
+        // Supported image formats
+        const imageExtensions = ['.webp', '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg'];
+
+        async function loadMediaFiles() {
+            try {
+                // Try to fetch directory listing (this works if server has directory listing enabled)
+                const response = await fetch('./cats/');
+                const text = await response.text();
+                
+                // Parse HTML directory listing to extract filenames
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                const links = Array.from(doc.querySelectorAll('a'));
+                
+                const mediaFiles = links
+                    .map(link => link.getAttribute('href'))
+                    .filter(href => href && imageExtensions.some(ext => 
+                        href.toLowerCase().endsWith(ext)
+                    ))
+                    .filter(href => !href.startsWith('/') && !href.includes('..'));
+
+                if (mediaFiles.length === 0) {
+                    throw new Error('No media files found or directory listing not available');
+                }
+
+                displayMedia(mediaFiles);
+                
+            } catch (err) {
+                console.error('Error loading files:', err);
+                
+                // Fallback: try common meme filenames
+                const commonNames = [
+                    'meme1.webp', 'meme2.webp', 'meme3.webp', 'funny1.webp', 'funny2.webp',
+                    'reaction1.gif', 'reaction2.gif', 'cats1.webp', 'dogs1.webp', 'random1.webp'
+                ];
+                
+                // Test which files actually exist
+                const existingFiles = [];
+                for (const filename of commonNames) {
+                    try {
+                        const testResponse = await fetch(`./webp/${filename}`, { method: 'HEAD' });
+                        if (testResponse.ok) {
+                            existingFiles.push(filename);
+                        }
+                    } catch (e) {
+                        // File doesn't exist, skip
+                    }
+                }
+                
+                if (existingFiles.length > 0) {
+                    displayMedia(existingFiles);
+                } else {
+                    showError('Could not load media files. Make sure your webp/ folder exists and contains images!');
+                }
+            }
+        }
+
+        function displayMedia(files) {
+            loading.style.display = 'none';
+            counter.textContent = `📊 ${files.length} Dank media Found! 📊`;
+            
+            files.forEach(filename => {
+                const mediaItem = document.createElement('div');
+                mediaItem.className = 'media-item';
+                
+                const img = document.createElement('img');
+                img.src = `./webp/${filename}`;
+                img.alt = filename;
+                img.loading = 'lazy';
+                
+                // Add click handler for modal
+                img.addEventListener('click', () => {
+                    modalImg.src = img.src;
+                    modal.style.display = 'block';
+                });
+                
+                // Handle image load errors
+                img.addEventListener('error', () => {
+                    img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjMzMzIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+SrCBObyBJbWFnZSA8L3RleHQ+Cjwvc3ZnPg==';
+                });
+                
+                const filename_div = document.createElement('div');
+                filename_div.className = 'filename';
+                filename_div.textContent = filename;
+                
+                mediaItem.appendChild(img);
+                mediaItem.appendChild(filename_div);
+                gallery.appendChild(mediaItem);
+            });
+        }
+
+        function showError(message) {
+            loading.style.display = 'none';
+            error.style.display = 'block';
+            error.textContent = `⚠️ ${message}`;
+            counter.textContent = '😢 No media loaded';
+        }
+
+        // Modal controls
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Start loading media
+        loadMediaFiles();
+    </script>
+</body>
+</html>
