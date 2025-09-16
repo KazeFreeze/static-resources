@@ -1,0 +1,36 @@
+# .github/workflows/main.yml
+name: Generate Media File List
+
+# Run this workflow on every push to the main branch
+on:
+  push:
+    branches:
+      - main
+      - master # Also include 'master' for older repositories
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Use the latest version of Ubuntu
+
+    steps:
+      # 1. Check out your repository code so the workflow can access it
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Set up Node.js, which is needed to run our script
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Use a recent, stable version of Node.js
+
+      # 3. Run the generate-file-list.js script
+      - name: Generate media list
+        id: generate_list
+        run: node generate-file-list.js
+
+      # 4. Commit the new media-list.json file back to your repository
+      - name: Commit and push if changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore: Auto-update media-list.json'
+          file_pattern: 'media-list.json' # Only commit if this specific file has changed
